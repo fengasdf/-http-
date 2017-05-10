@@ -1,0 +1,9 @@
+MySql.cpp:17: error: ISO C++ forbids declaration of ‘handing’ with no type
+MySql.cpp: In function ‘void hand_query(int&, char*&, int, char*, char*)’:
+MySql.cpp:32: error: invalid initialization of non-const reference of type ‘char*&’ from a temporary of type ‘char*’
+MySql.cpp:17: error: in passing argument 1 of ‘int handing(char*&, char*&)’
+MySql.cpp:38: error: invalid initialization of non-const reference of type ‘char*&’ from a temporary of type ‘char*’
+MySql.cpp:17: error: in passing argument 1 of ‘int handing(char*&, char*&)’
+MySql.cpp: In function ‘int main()’:
+MySql.cpp:168: error:wq
+: expected ‘}’ at end of input

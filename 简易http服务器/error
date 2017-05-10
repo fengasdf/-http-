@@ -1,0 +1,11 @@
+g++ -o http client.cpp http.cpp -lpthread
+client.cpp: In function ‘void* acceptwrite_routine(void*)’:
+client.cpp:53: error: ‘co_accept’ was not declared in this scope
+client.cpp: In function ‘int main(int, char**)’:
+client.cpp:97: error: ‘CreateTcpSocket’ was not declared in this scope
+client.cpp:98: error: ‘socketi’ was not declared in this scope
+client.cpp:122: error: ‘stCoRutine_t’ was not declared in this scope
+client.cpp:122: error: ‘accept_co’ was not declared in this scope
+client.cpp:122: error: expected ‘;’ before ‘:’ token
+client.cpp:126: error: expected unqualified-id before numeric constant
+make: *** [http] Error 1

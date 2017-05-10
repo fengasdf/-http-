@@ -1,0 +1,203 @@
+/*************************************************************************
+	> File Name: http.cpp
+	> Author: ma6174
+	> Mail: ma6174@163.com 
+	> Created Time: Sun 02 Apr 2017 07:32:21 PM PDT
+ ************************************************************************/
+
+#include"http.h"
+
+void printf_log(string s){
+
+        cout << s << endl;
+}
+
+int init_in(int socketi, char* str){
+
+    sockaddr_in addr;
+    bzero(&addr, sizeof(addr));
+    addr.sin_family = AF_INET;
+   // addr.sin_ip = inet_ntop
+    addr,sin_port = htons(PORT);
+
+    int err = bind(socketi, &addr, sizeof(addr));
+    if (err < 0){
+        printf_log("bind error");
+        exit(0);
+    }
+
+    err = listen(socketi, 5);
+    if (err < 0){
+        printf_log("listen error");
+        exit(0);
+    }
+    return socketi;
+}
+
+static int get_line(int fd, char *buf){
+
+    char ch = 0;
+    char next = 0;
+    int i = 0;
+    int err = 0;
+    while (ch != '\n'){
+
+        int size = read(fd, &ch, 1);
+        if (size <= 0){
+            printf_log("ke hu guanbi");
+            return -1;
+        }
+        
+        if (ch != '\n' && ch != '\r'){
+
+            bug[i++] = ch;
+        }
+        else{
+            if (ch == '\r'){
+
+                err = recv(fd, &next, 1, MSG_PEEK);
+                if (err < 0){
+                    printf_log("recv error");
+                    return -1;
+                }
+
+                if (next == '\n'){
+
+                    err = read(fd, &ch, 1);
+                    if (err < 0){
+                         printf_log("recv error");
+                        return -1;
+                    }
+
+                }//if
+
+                ch = '\n';
+
+            }
+
+        }//else
+
+
+    }//while
+
+
+buf[i] = 0;
+
+    return 1;
+}
+
+static int hand_cgi(int fd, char* path, char * argument){
+
+    char line[SIZE/2] = {0};
+    if (strlen(argument) == 0){
+
+        
+
+
+    }
+
+
+
+}
+
+
+
+void *hander_in(void *arg){
+
+    char *method = NULL;
+    char buf[SIZE] = {0};
+    char line[SIZE/2] = {0};
+    char url[SIZE/2] = {0};
+    char goal[SIZE/2] = {0};
+    char argument[SIZE] = {0};
+    int err = 0;
+    int cgi = 0;
+    int ret = 0;
+    err =  get_line((int)arg, line);
+    if (err < 0){
+        ret = 1;
+        goto end;
+    }
+    int i = 0;
+    for (i = 0; line[i] != ' '; i++){
+            ;
+    }
+
+    method = &line[0];
+    
+    for (i++,int j = 0; line[i] != ' '&&line[]i] != '?'; i++){
+        
+        url[j++] = line[i];
+    }
+    if (line[i] == '?'){
+        
+        for (i++,int j = 0; line[i] != ' '&&line[i] != '?'; i++){
+        
+             argument[j++] = line[i];
+        }
+        
+    }
+
+    if (strcasecmp(method, "POSE") != 0 && strcasecmp(method, "GET") != 0){
+
+        printf_log("method error");
+        ret = 2;
+        goto end;
+    }
+    
+
+    
+    if (strcasecmp(method, "POSE") == 0)
+        cgi = 1;
+    if (strcasecmp(method, "GET") == 0 && argument[0] != 0)
+        cgi = 1;
+    
+    if (strlen(url) == 1 && strcasecmp(url , '/') == 0)
+        sprintf(goal, "wwwroot/root.html");
+    else sprintf(goal, "wwwroot%s", url);
+
+    //判断文件
+    struct stat file;
+    err = stat(goal, file);
+    if (err < 0){
+        ret = 3;
+        printf_log("file not found");
+        goto end;
+    }
+    if (file.st_mode & S_IFDIR){
+        //
+    }
+
+    if (file.st_mode & S_IXUSR || file.st_mode & S_IXGRP || file.st_mode & S_OXOTH){
+        if (0 == cgi){
+         ret = 4;
+         printf_log("文件类型与cgi不匹配");
+         goto end;
+        }
+    }
+
+    if (1 == cgi){
+
+        hand_cgi((int)arg, url, argument);
+    }//cgi if
+    else{
+
+        
+        err = sendfile((int)arg, goal,1024);
+        if (err < 0){
+            ret = 5;
+            printf_log("sendfile error");
+        }
+
+    }//cgi else
+
+          end:
+          close((int)arg);
+
+
+}
+
+
+
+
+
